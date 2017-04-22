@@ -109,7 +109,7 @@ public class Person {
 	}
 
 	public String toStringChildren() {
-		String toReturn =  "(Person [name=" + name + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth;
+		String toReturn =  "(Person [name=" + name + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + ", father= "+fatherName + ", mother= "+motherName;
 		
 		if(!children.isEmpty()){
 			for(Person person: children){
@@ -123,14 +123,51 @@ public class Person {
 	public String toStringParents() {
 		String toReturn =  "(Person [name=" + name + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth;
 		if(mother != null){
-			 toReturn = toReturn  + ","+  "mother=" + mother.toStringParents();
+			 toReturn += "mother=" + mother.toStringParents();
+		}
+		else{
+			toReturn += "mother = ?";
 		}
 		
 		if(father != null){
-			 toReturn = toReturn  + ","+  "mother=" + father.toStringParents();
+			 toReturn  += "father=" + father.toStringParents();
+		}
+		else{
+			toReturn += "father = ?";
 		}
 		
 		return toReturn + "])";
+	}
+	
+	public String toStringParentsWithoutPerson() {
+		String toReturn =  "(";
+		if(mother != null){
+			 toReturn += "mother=" + mother.toStringParents();
+		}
+		else{
+			toReturn += "mother = ?";
+		}
+		
+		if(father != null){
+			 toReturn += "father=" + father.toStringParents();
+		}
+		else{
+			toReturn += "father = ?";
+		}
+		
+		return toReturn + ")";
+	}
+	
+	public String toStringChildrenWithoutPerson() {
+		String toReturn =  "(";
+		
+		if(!children.isEmpty()){
+			for(Person person: children){
+				toReturn = toReturn  + ""+  "child=" + person.toStringChildren();
+			}
+		}
+		
+		return toReturn + ")";
 	}
 
 

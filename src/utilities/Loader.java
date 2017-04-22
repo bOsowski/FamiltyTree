@@ -62,23 +62,31 @@ public class Loader {
 		}
 	}
 	
+	/**
+	 * Fills in the mother,father and children Person variables of people.
+	 */
 	public void fillPeoplesValues(){
 		for(Map.Entry<String, Person> person: people.entrySet()){
 			//fill parents for each person if they exist.
 			//fill children for the parents.
-			if(person.getValue().getMotherName() != null && people.containsKey(person.getValue().getMotherName())){
+			if(person.getValue().getMotherName() != null && people.containsKey(person.getValue().getMotherName()) && person.getValue().getMother() == null){
 				//fill parents
 				person.getValue().setMother(people.get(person.getValue().getMotherName()));
 				//fill children
 				people.get(person.getValue().getMotherName()).addChild(person.getValue());
 			}
-			if(person.getValue().getFatherName() != null && people.containsKey(person.getValue().getFatherName())){
+			if(person.getValue().getFatherName() != null && people.containsKey(person.getValue().getFatherName()) && person.getValue().getFather() == null){
 				//fill parents
 				person.getValue().setFather(people.get(person.getValue().getFatherName()));
 				//fill children
 				people.get(person.getValue().getFatherName()).addChild(person.getValue());
 			}
 		}
+	}
+	
+	public void addPerson(String name, String gender, String dateOfBirth, String motherName, String fatherName){
+		people.put(name, new Person(name,gender,dateOfBirth,motherName,fatherName));
+		fillPeoplesValues();
 	}
 
 }
