@@ -23,8 +23,7 @@ public class Person {
 	}
 	
 	public Person(String name, String gender, String dateOfBirth, String motherName, String fatherName){
-		if(!name.equals("?")) this.name = name;
-		else return;
+		this.name = name;
 		
 		if(gender.charAt(0) == 'm' || gender.charAt(0) == 'M'){
 			this.gender = 'M';
@@ -93,8 +92,6 @@ public class Person {
 	public void setFatherName(String fatherName) {
 		this.fatherName = fatherName;
 	}
-	
-	
 
 	public ArrayList<Person> getChildren() {
 		return children;
@@ -115,7 +112,7 @@ public class Person {
 		return "Person [name=" + name + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + "]";
 	}
 
-	public String toStringChildren() {
+	private String toStringChildren() {
 		String toReturn =  "(Person [name=" + name + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + ", father= "+fatherName + ", mother= "+motherName;
 		
 		if(!children.isEmpty()){
@@ -127,7 +124,7 @@ public class Person {
 		return toReturn + "])";
 	}
 	
-	public String toStringParents() {
+	private String toStringParents() {
 		String toReturn =  "(Person [name=" + name + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth;
 		if(mother != null){
 			 toReturn += "mother=" + mother.toStringParents();
@@ -146,6 +143,10 @@ public class Person {
 		return toReturn + "])";
 	}
 	
+	/**
+	 * modified toString
+	 * @return
+	 */
 	public String toStringParentsWithoutPerson() {
 		String toReturn =  "(";
 		if(mother != null){
@@ -171,6 +172,10 @@ public class Person {
 		return toReturn + ")";
 	}
 	
+	/**
+	 * 
+	 * @return a modified toString
+	 */
 	public String toStringChildrenWithoutPerson() {
 		String toReturn =  "(";
 		

@@ -5,13 +5,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Scanner;
 
 import javax.swing.JFileChooser;
@@ -24,21 +20,28 @@ import application.Person;
 public class Loader {
 	
 	public static HashMap<String, Person> people = new HashMap<String,Person>();
-	//public static ArrayList<String> peopleTextFile = new ArrayList<String>();
-	
 	public File file;
 
 	public Loader() {
-		file = new File(getFile("Text Files", "txt"));
+		file = new File(getFile("Database text files", "txt"));
 		try {
 			loadInPeope(file);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		fillPeoplesValues();
-		
 	}
 	
+	/**
+	 * Appends the last added person to the end of the database file.
+	 * 
+	 * @param name
+	 * @param gender
+	 * @param dob
+	 * @param mother
+	 * @param father
+	 * @throws IOException
+	 */
 	public void updateFile(String name, String gender, String dob, String mother, String father) throws IOException{
 		Writer output = new BufferedWriter(new FileWriter(file, true));
 		
@@ -58,6 +61,12 @@ public class Loader {
 		output.close();
 	}
 	
+	/**
+	 * FileChooser
+	 * @param fileType
+	 * @param fileExtension
+	 * @return filePath
+	 */
 	private String getFile(String fileType, String fileExtension){
 		String filePath = "";
 		JFrame jf = new JFrame();
@@ -73,6 +82,11 @@ public class Loader {
         return filePath;
 	}
 	
+	/**
+	 * loads and parses the file
+	 * @param file
+	 * @throws FileNotFoundException
+	 */
 	public void loadInPeope(File file) throws FileNotFoundException{
 		Scanner scanner = new Scanner(file);
 		String line;	//will be holding each line from the file that scanner parses in
@@ -90,6 +104,8 @@ public class Loader {
 				people.put(lineTokens[0], new Person(lineTokens[0], lineTokens[1], lineTokens[2], lineTokens[3], lineTokens[4]));
 			}
 		}
+		
+		scanner.close();
 	}
 	
 	/**
@@ -114,6 +130,14 @@ public class Loader {
 		}
 	}
 	
+	/**
+	 * calls the normal constructor and also calls a function responsible for filling other values.
+	 * @param name
+	 * @param gender
+	 * @param dateOfBirth
+	 * @param motherName
+	 * @param fatherName
+	 */
 	public void addPerson(String name, String gender, String dateOfBirth, String motherName, String fatherName){
 		people.put(name, new Person(name,gender,dateOfBirth,motherName,fatherName));
 		fillPeoplesValues();

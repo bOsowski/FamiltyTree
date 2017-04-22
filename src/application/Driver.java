@@ -7,18 +7,22 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import utilities.Loader;
 
+/**
+ * 
+ * @author Bartosz Osowski, 20072283
+ * @date 22/04/2017
+ */
+
+@SuppressWarnings("serial")
 public class Driver extends JFrame implements WindowListener{
+	
 	private Loader loader;
-	//JPanel mainCard;
-	//JPanel addPersonCard;
 	private ButtonListener btnListener;
 	private JButton viewPersonBtn;
 	private JButton addPersonBtn;
@@ -36,7 +40,6 @@ public class Driver extends JFrame implements WindowListener{
 	}
 	
 	public Driver() {
-		
 		loader = new Loader();
 		mainMenu();
 	}
@@ -45,15 +48,19 @@ public class Driver extends JFrame implements WindowListener{
 
 	
 	private void mainMenu(){
-		setLayout(new FlowLayout());	//sets 
-	    setTitle("Family Tree");  // "super" Frame sets its title
+		//General Window settings
+		setLayout(new FlowLayout());
+	    setTitle("Family Tree");
+	    setSize(400, 700); 
 	    
+	    //buttons
 	    btnListener = new ButtonListener();
 	    viewPersonBtn = new JButton("View person");
 	    addPersonBtn = new JButton("Add person");
 	    addPersonBtn.setPreferredSize(new Dimension(350,25));
 	    viewPersonBtn.setPreferredSize(new Dimension(350, 25));
 	    
+	    //text fields
 	    viewPersonText = new JTextField("", 30);
 	    personsNameText = new JTextField("", 30);
 	    personsDateOfBirthText = new JTextField("", 30);
@@ -65,15 +72,11 @@ public class Driver extends JFrame implements WindowListener{
 	    personsFatherText= new JTextField("", 30);
 	    taDisplay = new TextArea();
 	    taDisplay.setPreferredSize(new Dimension(350, 200));
-	   // taDisplay.setLineWrap(true);
-	   // taDisplay.setWrapStyleWord(true);
 
-
+	    //adding to view
 	    add(new Label("name"));
 	    add(viewPersonText);	
 		add(viewPersonBtn);
-
-	    
 	    add(new Label("name"));
 	    add(personsNameText);
 	    add(new Label("date of birth"));
@@ -87,37 +90,30 @@ public class Driver extends JFrame implements WindowListener{
 	    add(addPersonBtn);
 	    add(taDisplay);
 	    
+	    //action listeners
 	    viewPersonBtn.addActionListener(btnListener);
-	    addPersonBtn.addActionListener(btnListener);
-
-	    setSize(400, 700);        // "super" Frame sets its initial window size
+	    addPersonBtn.addActionListener(btnListener);   
 	    
-	   // pack();
+	    //Making the frame visible
 	    setVisible(true);
 	}
 
 	@Override
-	public void windowActivated(WindowEvent e) {
-	}
+	public void windowActivated(WindowEvent e) {}
 	@Override
-	public void windowClosed(WindowEvent e) {
-	}
+	public void windowClosed(WindowEvent e) {}
 	@Override
 	public void windowClosing(WindowEvent e) {
 		System.exit(0);	
 	}
 	@Override
-	public void windowDeactivated(WindowEvent e) {
-	}
+	public void windowDeactivated(WindowEvent e) {}
 	@Override
-	public void windowDeiconified(WindowEvent e) {
-	}
+	public void windowDeiconified(WindowEvent e) {}
 	@Override
-	public void windowIconified(WindowEvent e) {	
-	}
+	public void windowIconified(WindowEvent e) {}
 	@Override
-	public void windowOpened(WindowEvent e) {	
-	}
+	public void windowOpened(WindowEvent e) {}
 	
 	private class ButtonListener implements ActionListener{
 		
@@ -125,13 +121,13 @@ public class Driver extends JFrame implements WindowListener{
 		public void actionPerformed(ActionEvent event) {
 			JButton source = (JButton)event.getSource();
 
+			//on viewPersonBtn press..
 			if(source == viewPersonBtn){
-				System.out.println("View a person");
 				String personName = viewPersonText.getText();
-				taDisplay.setText(Loader.people.get(personName) + "\n\n\n"+personName+"'s Descendants: "+Loader.people.get(personName).toStringChildrenWithoutPerson()+"\n\n\n");
-				taDisplay.setText(taDisplay.getText() + personName+"'s Ancestors: "+Loader.people.get(personName).toStringParentsWithoutPerson());
+				taDisplay.setText(Loader.people.get(personName) + "\n\n\n"+personName+"'s Descendants: "+Loader.people.get(personName).toStringChildrenWithoutPerson()+"\n\n\n" + personName+"'s Ancestors: "+Loader.people.get(personName).toStringParentsWithoutPerson());
 			}
 			
+			//on addPersonBtn press..
 			else if(source == addPersonBtn){
 				taDisplay.setText("Adding a person..");
 				if(personsNameText.getText().length() >= 2 && !Loader.people.containsKey(personsNameText.getText())){
@@ -145,22 +141,19 @@ public class Driver extends JFrame implements WindowListener{
 						e.printStackTrace();
 					}
 					
+					//clear the fields
 					personsNameText.setText("");
 					personsDateOfBirthText.setText("");
 					personsMotherText.setText("");
 					personsFatherText.setText("");
 				}
-				
 				else if(Loader.people.containsKey(personsNameText.getText())){
 					taDisplay.setText("This person already exists!");
 				}
-				
 				else{
 					taDisplay.setText("Unable to add a person.\nCheck the required fields.");
 				}
-				
 			}
-		
 		}
 	}
 
