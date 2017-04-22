@@ -108,6 +108,13 @@ public class Person {
 		this.children = children;
 	}
 
+	
+
+	@Override
+	public String toString() {
+		return "Person [name=" + name + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + "]";
+	}
+
 	public String toStringChildren() {
 		String toReturn =  "(Person [name=" + name + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + ", father= "+fatherName + ", mother= "+motherName;
 		
@@ -126,11 +133,11 @@ public class Person {
 			 toReturn += "mother=" + mother.toStringParents();
 		}
 		else{
-			toReturn += "mother = ?";
+			toReturn += " mother = ?";
 		}
 		
 		if(father != null){
-			 toReturn  += "father=" + father.toStringParents();
+			 toReturn  += " father=" + father.toStringParents();
 		}
 		else{
 			toReturn += "father = ?";
@@ -142,17 +149,23 @@ public class Person {
 	public String toStringParentsWithoutPerson() {
 		String toReturn =  "(";
 		if(mother != null){
-			 toReturn += "mother=" + mother.toStringParents();
+			 toReturn += " mother=" + mother.toStringParents();
+		}
+		else if(motherName != null && !motherName.equals("?")){
+			toReturn += " mother= " + motherName;
 		}
 		else{
 			toReturn += "mother = ?";
 		}
 		
 		if(father != null){
-			 toReturn += "father=" + father.toStringParents();
+			 toReturn += " father= " + father.toStringParents();
+		}
+		else if(fatherName != null && !fatherName.equals("?")){
+			toReturn += " father= " + fatherName;
 		}
 		else{
-			toReturn += "father = ?";
+			toReturn += " father = ?";
 		}
 		
 		return toReturn + ")";

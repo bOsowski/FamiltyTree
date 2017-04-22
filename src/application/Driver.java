@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,20 +16,20 @@ import javax.swing.JTextField;
 import utilities.Loader;
 
 public class Driver extends JFrame implements WindowListener{
-	Loader loader;
+	private Loader loader;
 	//JPanel mainCard;
 	//JPanel addPersonCard;
-	ButtonListener btnListener;
-    JButton viewPersonBtn;
-    JButton addPersonBtn;
-    JTextField viewPersonText;
+	private ButtonListener btnListener;
+	private JButton viewPersonBtn;
+	private JButton addPersonBtn;
+	private JTextField viewPersonText;
     
-    JTextField personsNameText;
-    JTextField personsDateOfBirthText;
-    Choice personsGenderChoice;
-    JTextField personsMotherText;
-    JTextField personsFatherText;
-    TextArea taDisplay;
+	private JTextField personsNameText;
+	private JTextField personsDateOfBirthText;
+	private Choice personsGenderChoice;
+	private JTextField personsMotherText;
+	private JTextField personsFatherText;
+	private TextArea taDisplay;
 
 	public static void main(String[] args) {
 		new Driver();
@@ -127,7 +128,7 @@ public class Driver extends JFrame implements WindowListener{
 			if(source == viewPersonBtn){
 				System.out.println("View a person");
 				String personName = viewPersonText.getText();
-				taDisplay.setText(personName+"'s Descendants: "+Loader.people.get(personName).toStringChildrenWithoutPerson()+"\n\n\n");
+				taDisplay.setText(Loader.people.get(personName) + "\n\n\n"+personName+"'s Descendants: "+Loader.people.get(personName).toStringChildrenWithoutPerson()+"\n\n\n");
 				taDisplay.setText(taDisplay.getText() + personName+"'s Ancestors: "+Loader.people.get(personName).toStringParentsWithoutPerson());
 			}
 			
@@ -136,6 +137,13 @@ public class Driver extends JFrame implements WindowListener{
 				if(personsNameText.getText().length() >= 2 && !Loader.people.containsKey(personsNameText.getText())){
 					loader.addPerson(personsNameText.getText(), personsGenderChoice.getSelectedItem(), personsDateOfBirthText.getText(), personsMotherText.getText(), personsFatherText.getText());
 					taDisplay.setText("Person added.");
+					
+					//update the file
+					try {
+						loader.updateFile(personsNameText.getText(), personsGenderChoice.getSelectedItem().charAt(0)+"", personsDateOfBirthText.getText(), personsMotherText.getText(), personsFatherText.getText());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 					
 					personsNameText.setText("");
 					personsDateOfBirthText.setText("");

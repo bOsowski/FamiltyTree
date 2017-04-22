@@ -1,7 +1,14 @@
 package utilities;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,15 +24,38 @@ import application.Person;
 public class Loader {
 	
 	public static HashMap<String, Person> people = new HashMap<String,Person>();
+	//public static ArrayList<String> peopleTextFile = new ArrayList<String>();
+	
+	public File file;
 
 	public Loader() {
+		file = new File(getFile("Text Files", "txt"));
 		try {
-			loadInPeope(new File(getFile("Text Files", "txt")));
+			loadInPeope(file);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		fillPeoplesValues();
 		
+	}
+	
+	public void updateFile(String name, String gender, String dob, String mother, String father) throws IOException{
+		Writer output = new BufferedWriter(new FileWriter(file, true));
+		
+		//other values aren't possible to be null
+		if(dob == null){
+			dob = "?";
+		}
+		if(mother == null){
+			mother = "?";
+		}
+		if(father == null){
+			father = "?";
+		}
+		
+
+		output.append("\n"+name+" "+gender+" "+dob+" "+mother+" "+father);
+		output.close();
 	}
 	
 	private String getFile(String fileType, String fileExtension){
