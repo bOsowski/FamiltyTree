@@ -2,25 +2,17 @@ package application;
 
 import java.util.ArrayList;
 
+import utilities.Loader;
+
 public class Person {
 
 	private String name;
 	private char gender;
 	private int dateOfBirth;
-	private Person mother;
-	private Person father;
-	private ArrayList<Person> children = new ArrayList<Person>();
-	private String motherName;
-	private String fatherName;
+	private ArrayList<String> children = new ArrayList<String>();
+	private String mother;
+	private String father;
 
-	
-	public Person(String name, char gender, int dateOfBirth, Person mother, Person father) {
-		this.name = name;
-		this.gender = gender;
-		this.dateOfBirth = dateOfBirth;
-		this.mother = mother;
-		this.father = father;
-	}
 	
 	public Person(String name, String gender, String dateOfBirth, String motherName, String fatherName){
 		this.name = name;
@@ -36,12 +28,8 @@ public class Person {
 			this.dateOfBirth = Integer.parseInt(dateOfBirth);
 		}
 		
-		if(!motherName.equals("?")){
-			this.motherName = motherName;
-		}
-		if(!fatherName.equals("?")){
-			this.fatherName = fatherName;
-		}
+		this.mother = motherName;
+		this.father = fatherName;
 		
 	}
 	
@@ -64,130 +52,93 @@ public class Person {
 	public void setDateOfBirth(int dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
-	public Person getMother() {
+	public String getMother() {
 		return mother;
 	}
-	public void setMother(Person mother) {
+	public void setMother(String mother) {
 		this.mother = mother;
 	}
-	public Person getFather() {
+	public String getFather() {
 		return father;
 	}
-	public void setFather(Person father) {
+	public void setFather(String father) {
 		this.father = father;
 	}
-	
-	public String getMotherName() {
-		return motherName;
-	}
 
-	public void setMotherName(String motherName) {
-		this.motherName = motherName;
-	}
-
-	public String getFatherName() {
-		return fatherName;
-	}
-
-	public void setFatherName(String fatherName) {
-		this.fatherName = fatherName;
-	}
-
-	public ArrayList<Person> getChildren() {
+	public ArrayList<String> getChildren() {
 		return children;
 	}
 	
-	public void addChild(Person child){
-		this.children.add(child);
+	public void addChild(String childName){
+		this.children.add(childName);
 	}
-
-	public void setChildren(ArrayList<Person> children) {
-		this.children = children;
-	}
-
 	
-
+	
+	
 	@Override
 	public String toString() {
-		return "Person [name=" + name + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + "]";
+		return "Person [name=" + name + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + ", mother=" + mother
+				+ ", father=" + father + "]";
 	}
 
-	private String toStringChildren() {
-		String toReturn =  "(Person [name=" + name + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth + ", father= "+fatherName + ", mother= "+motherName;
+
+	/**
+	 * recursive function which adds a whole family with the specified name
+	 * (which consists of people connected in any way) into Loader.families.
+	 * @param familyName
+	 * @param isFirstMethodCalled
+	 */
+	public void createFamily(String familyName ,boolean isFirstMethodCalled){
+		//If the function is the first one called.. (every other function has to be called with this set to false);
+		//Add the new family to the 
+		if(isFirstMethodCalled){
+			Loader.families.put(familyName, new ArrayList<String>());
+		}
 		
+		//If the person hasn't been dealt with already..
+		if(!Loader.families.get(familyName).contains(name)){
+			Loader.families.get(familyName).add(name);
+			
+			if(!Loader.families.get(familyName).contains(mother)){
+				if(!mother.equals("?")){Loader.people.get(mother).createFamily(familyName, false);}
+			}
+			if(!Loader.families.get(familyName).contains(father)){
+				if(!father.equals("?")){Loader.people.get(father).createFamily(familyName, false);}
+			}
+			
+			for(String child: children){
+				if(!Loader.families.get(familyName).contains(child)){
+					Loader.people.get(child).createFamily(familyName, false);
+				}
+			}
+			
+			
+		}
+	}
+
+
+	public String toStringChildren(boolean isFirstMethodCalled) {
+		String toString = "";
+		if(!isFirstMethodCalled){toString += name + ", ";}
+
 		if(!children.isEmpty()){
-			for(Person person: children){
-				toReturn = toReturn  + ","+  "child=" + person.toStringChildren();
+			for(String child: children){
+				toString+=Loader.people.get(child).toStringChildren(false);
 			}
 		}
-		
-		return toReturn + "])";
-	}
-	
-	private String toStringParents() {
-		String toReturn =  "(Person [name=" + name + ", gender=" + gender + ", dateOfBirth=" + dateOfBirth;
-		if(mother != null){
-			 toReturn += "mother=" + mother.toStringParents();
-		}
-		else{
-			toReturn += " mother = ?";
-		}
-		
-		if(father != null){
-			 toReturn  += " father=" + father.toStringParents();
-		}
-		else{
-			toReturn += "father = ?";
-		}
-		
-		return toReturn + "])";
-	}
-	
-	/**
-	 * modified toString
-	 * @return
-	 */
-	public String toStringParentsWithoutPerson() {
-		String toReturn =  "(";
-		if(mother != null){
-			 toReturn += " mother=" + mother.toStringParents();
-		}
-		else if(motherName != null && !motherName.equals("?")){
-			toReturn += " mother= " + motherName;
-		}
-		else{
-			toReturn += "mother = ?";
-		}
-		
-		if(father != null){
-			 toReturn += " father= " + father.toStringParents();
-		}
-		else if(fatherName != null && !fatherName.equals("?")){
-			toReturn += " father= " + fatherName;
-		}
-		else{
-			toReturn += " father = ?";
-		}
-		
-		return toReturn + ")";
-	}
-	
-	/**
-	 * 
-	 * @return a modified toString
-	 */
-	public String toStringChildrenWithoutPerson() {
-		String toReturn =  "(";
-		
-		if(!children.isEmpty()){
-			for(Person person: children){
-				toReturn = toReturn  + ""+  "child=" + person.toStringChildren();
-			}
-		}
-		
-		return toReturn + ")";
+		return toString;
 	}
 
 
+	public String toStringAncestors(boolean isFirstMethodCalled) {
+		String toString = "";
+		if(!isFirstMethodCalled){toString += name + ", ";}
+		
+		if(!mother.equals("?")){ toString += Loader.people.get(mother).toStringAncestors(false);}
+		if(!father.equals("?")){ toString += Loader.people.get(father).toStringAncestors(false);}
+		
+		return toString;
+	}
+	
 
 }

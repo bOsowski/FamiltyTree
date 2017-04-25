@@ -7,6 +7,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map.Entry;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
@@ -51,27 +54,27 @@ public class Driver extends JFrame implements WindowListener{
 		//General Window settings
 		setLayout(new FlowLayout());
 	    setTitle("Family Tree");
-	    setSize(400, 700); 
+	    setSize(700, 1400); 
 	    
 	    //buttons
 	    btnListener = new ButtonListener();
 	    viewPersonBtn = new JButton("View person");
 	    addPersonBtn = new JButton("Add person");
-	    addPersonBtn.setPreferredSize(new Dimension(350,25));
-	    viewPersonBtn.setPreferredSize(new Dimension(350, 25));
+	    addPersonBtn.setPreferredSize(new Dimension(660,50));
+	    viewPersonBtn.setPreferredSize(new Dimension(660, 50));
 	    
 	    //text fields
-	    viewPersonText = new JTextField("", 30);
-	    personsNameText = new JTextField("", 30);
-	    personsDateOfBirthText = new JTextField("", 30);
+	    viewPersonText = new JTextField("", 60);
+	    personsNameText = new JTextField("", 60);
+	    personsDateOfBirthText = new JTextField("", 60);
 	    personsGenderChoice= new Choice();
 	    personsGenderChoice.add("Male");
 	    personsGenderChoice.add("Female");
-	    personsGenderChoice.setPreferredSize(new Dimension(350, 25));
-	    personsMotherText= new JTextField("", 30);
-	    personsFatherText= new JTextField("", 30);
+	    personsGenderChoice.setPreferredSize(new Dimension(670, 50));
+	    personsMotherText= new JTextField("", 60);
+	    personsFatherText= new JTextField("", 60);
 	    taDisplay = new TextArea();
-	    taDisplay.setPreferredSize(new Dimension(350, 200));
+	    taDisplay.setPreferredSize(new Dimension(680,700));
 
 	    //adding to view
 	    add(new Label("name"));
@@ -115,6 +118,18 @@ public class Driver extends JFrame implements WindowListener{
 	@Override
 	public void windowOpened(WindowEvent e) {}
 	
+	private String checkIfBelongsToFamily(String personName){
+		//return the family name if the person is in that family.
+		for(Entry<String, ArrayList<String>> family: Loader.families.entrySet()){
+			if(family.getValue().contains(personName)){
+				return family.getKey();
+			}
+		}
+		//if the person doesn't belong to any families, make a new family and return the name.
+		Loader.people.get(personName).createFamily(personName, true);
+		return personName;
+	}
+	
 	private class ButtonListener implements ActionListener{
 		
 		@Override
@@ -124,7 +139,18 @@ public class Driver extends JFrame implements WindowListener{
 			//on viewPersonBtn press..
 			if(source == viewPersonBtn){
 				String personName = viewPersonText.getText();
-				taDisplay.setText(Loader.people.get(personName) + "\n\n\n"+personName+"'s Descendants: "+Loader.people.get(personName).toStringChildrenWithoutPerson()+"\n\n\n" + personName+"'s Ancestors: "+Loader.people.get(personName).toStringParentsWithoutPerson());
+				
+				String familyName = checkIfBelongsToFamily(personName);
+				
+				taDisplay.setText(Loader.people.get(personName) + "\n\n\n"+personName+"'s Descendants: "+Loader.people.get(personName).toStringChildren(true)+"\n\n\n" + personName+"'s Ancestors: "+Loader.people.get(personName).toStringAncestors(true));
+				taDisplay.setText(taDisplay.getText() + "\n\n\n\nAll People connected to "+personName+"("+Loader.families.get(familyName).size()+"):\n\n");
+				
+				//Add all connected people to the display.
+				String people = "";
+				for(String person: Loader.families.get(familyName)){
+					people += Loader.people.get(person)+"\n";
+				}
+				taDisplay.setText(taDisplay.getText() + people);
 			}
 			
 			//on addPersonBtn press..

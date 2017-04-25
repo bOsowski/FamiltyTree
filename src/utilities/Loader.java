@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -20,6 +21,8 @@ import application.Person;
 public class Loader {
 	
 	public static HashMap<String, Person> people = new HashMap<String,Person>();
+	//				     //familyName     //personName
+	public static HashMap<String,ArrayList<String>> families = new HashMap<String, ArrayList<String>>();
 	public File file;
 
 	public Loader() {
@@ -29,7 +32,7 @@ public class Loader {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		fillPeoplesValues();
+		fillChildren();
 	}
 	
 	/**
@@ -109,23 +112,18 @@ public class Loader {
 	}
 	
 	/**
-	 * Fills in the mother,father and children Person variables of people.
+	 * Fills in the children
 	 */
-	public void fillPeoplesValues(){
+	public void fillChildren(){
 		for(Map.Entry<String, Person> person: people.entrySet()){
-			//fill parents for each person if they exist.
 			//fill children for the parents.
-			if(person.getValue().getMotherName() != null && people.containsKey(person.getValue().getMotherName()) && person.getValue().getMother() == null){
-				//fill parents
-				person.getValue().setMother(people.get(person.getValue().getMotherName()));
+			if(!person.getValue().getMother().equals("?") && people.containsKey(person.getValue().getMother())){
 				//fill children
-				people.get(person.getValue().getMotherName()).addChild(person.getValue());
+				people.get(person.getValue().getMother()).addChild(person.getValue().getName());
 			}
-			if(person.getValue().getFatherName() != null && people.containsKey(person.getValue().getFatherName()) && person.getValue().getFather() == null){
-				//fill parents
-				person.getValue().setFather(people.get(person.getValue().getFatherName()));
+			if(!person.getValue().getFather().equals("?") && people.containsKey(person.getValue().getFather())){
 				//fill children
-				people.get(person.getValue().getFatherName()).addChild(person.getValue());
+				people.get(person.getValue().getFather()).addChild(person.getValue().getName());
 			}
 		}
 	}
@@ -140,7 +138,7 @@ public class Loader {
 	 */
 	public void addPerson(String name, String gender, String dateOfBirth, String motherName, String fatherName){
 		people.put(name, new Person(name,gender,dateOfBirth,motherName,fatherName));
-		fillPeoplesValues();
+		fillChildren();
 	}
 
 }
